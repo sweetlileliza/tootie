@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tuti’s Memory Jar 💖</title>
+
+  <style>
+    body {
+      background: linear-gradient(180deg, #fff7fa 0%, #ffeef8 100%);
+      font-family: 'Comic Sans MS', cursive;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: #5f4b51;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-top: 2rem;
+      color: #ff8fab;
+      text-shadow: 1px 1px #fff;
+    }
+
+    .tuti {
+      margin: 2rem auto;
+      text-align: center;
+      position: relative;
+    }
+
+    .tuti img {
+      width: 180px;
+      height: auto;
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .memory-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 1rem;
+      z-index: 10;
+    }
+
+    .memory-form input,
+    .memory-form button {
+      font-family: inherit;
+      padding: 0.6rem 1rem;
+      border-radius: 12px;
+      border: none;
+      background: #fff8f8;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      font-size: 1rem;
+      width: 250px;
+      max-width: 80%;
+    }
+
+    .memory-form button {
+      background: pink;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .memory-form button:hover {
+      background: #ffb6c1;
+      transform: scale(1.05);
+    }
+
+    .hearts {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -50px;
+      font-size: 1rem;
+      opacity: 0.9;
+      animation: floatUp linear infinite;
+      color: #ffb6c1;
+      text-shadow: 0 0 5px rgba(255, 182, 193, 0.8);
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-110vh);
+        opacity: 0;
+      }
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #a38d93;
+    }
+  </style>
+</head>
+<body>
+  <h1>🐾 Tuti’s Memory Jar 💖</h1>
+
+  <div class="tuti">
+    <img src="tuti.png" alt="Tuti the plush friend">
+    <p>Take care of Tuti — and leave behind a piece of your childhood 🌷</p>
+  </div>
+
+  <div class="memory-form">
+    <input id="name" type="text" placeholder="Your name (optional)">
+    <input id="memory" type="text" placeholder="Favorite toy or memory ✨">
+    <button type="submit">Send a Heart 💗</button>
+  </div>
+
+  <div class="hearts"></div>
+
+  <footer>Every heart here holds someone’s memory 🕯️</footer>
+
+ <!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js"></script>
+
+<script>
+  // 🩵 Corrected Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBx0FIDSLWR1KsKLi7x0DmuDS6KQX55gIg",
+    authDomain: "tuti-memory-jar.firebaseapp.com",
+    databaseURL: "https://tuti-memory-jar-default-rtdb.firebaseio.com",
+    projectId: "tuti-memory-jar",
+    storageBucket: "tuti-memory-jar.firebasestorage.app",
+    messagingSenderId: "391826622043",
+    appId: "1:391826622043:web:c8688ad3ce95d28fc6a17e"
+  };
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.database(app);
+
+  async function addMemory(name, memory) {
+    if (!memory.trim()) return;
+    const newRef = db.ref('memories').push();
+    await newRef.set({
+      name: name || "Anonymous",
+      memory,
+      date: new Date().toISOString()
+    });
+  }
+
+  function fetchMemories() {
+    db.ref('memories').on('value', (snapshot) => {
+      const data = snapshot.val() || {};
+      const container = document.querySelector('.hearts');
+      container.innerHTML = '';
+
+      Object.values(data).forEach(mem => {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.textContent = `💖 ${mem.memory}`;
+        heart.style.left = Math.random() * 90 + '%';
+        heart.style.animationDuration = 8 + Math.random() * 10 + 's';
+        heart.style.fontSize = 0.8 + Math.random() * 0.6 + 'rem';
+        heart.style.color = `hsl(${Math.random() * 40 + 330}, 80%, 75%)`;
+        container.appendChild(heart);
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const nameInput = document.getElementById('name');
+    const memoryInput = document.getElementById('memory');
+    const button = document.querySelector('.memory-form button');
+
+    button.addEventListener('click', async () => {
+      await addMemory(nameInput.value, memoryInput.value);
+      memoryInput.value = '';
+    });
+
+    fetchMemories();
+  });
+</script>
+
+</body>
+</html>
