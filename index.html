@@ -128,16 +128,22 @@
       z-index: 999; /* increased so hearts stay above all elements */
     }
 
-    .heart {
-      position: absolute;
-      bottom: -50px;
-      font-size: 1rem;
-      opacity: 1;
-      animation: floatUp linear infinite;
-      color: #ffb6c1;
-      text-shadow: 0 0 5px rgba(255, 182, 193, 0.8);
-      white-space: nowrap;
-    }
+.heart {
+  position: absolute;
+  bottom: 0;
+  font-size: 1rem;
+  opacity: 0.9;
+  color: #ffb6c1;
+  text-shadow: 0 0 5px rgba(255, 182, 193, 0.8);
+  animation: floatUp linear infinite;
+  max-width: 90vw; /* keeps hearts within screen width */
+  white-space: normal; /* allows wrapping */
+  word-wrap: break-word; /* breaks long words if needed */
+  text-align: center; /* keeps text looking nice */
+  left: 50%; /* center horizontally */
+  transform: translateX(-50%); /* true center alignment */
+}
+
 
     @keyframes floatUp {
       0% { transform: translateY(0); opacity: 0.8; }
