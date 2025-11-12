@@ -125,6 +125,8 @@
       max-width: 90vw;
       white-space: normal;
       word-wrap: break-word;
+overflow-wrap: break-word;
+
       text-align: center;
       left: 50%;
       transform: translateX(-50%);
@@ -373,9 +375,16 @@
     const heart = document.createElement('div');
     heart.className = 'heart';
     heart.textContent = `💖 ${mem.name || 'Someone'}: ${mem.text}`;
-    heart.style.left = Math.random() * 90 + '%';
-    heart.style.animationDuration = 10 + Math.random() * 10 + 's';
-    heart.style.fontSize = 0.9 + Math.random() * 0.6 + 'rem';
+    heart.style.left = Math.random() * 40 + '%';
+heart.style.bottom = Math.random() * 90 + '%';
+    heart.style.animationDuration = 10 + Math.random() * 100 + 's';
+if (window.innerWidth < 768) {
+  // smaller hearts on mobile
+  heart.style.fontSize = 0.4 + Math.random() * 0.4 + 'rem';
+} else {
+  // bigger hearts on desktop
+  heart.style.fontSize = 0.8 + Math.random() * 0.6 + 'rem';
+}
     heartsContainer.appendChild(heart);
   }
 
