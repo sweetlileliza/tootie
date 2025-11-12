@@ -57,14 +57,14 @@
       box-shadow: 0 5px 15px rgba(255,182,193,0.3);
     }
     .tootie {
-        width: 35vw; /* takes up 35% of the viewport width */
-  max-width: 220px; /* prevents her from becoming too big on large screens */
-  height: auto; /* keeps proportions */
-  aspect-ratio: 1 / 1; /* keeps her square if height:auto doesn't apply perfectly */
-  background: url('tootieidle.gif') center/contain no-repeat;
-  margin: 6px auto;
-  border-radius: 12px;
-  transition: transform .22s ease;
+      width: 35vw; 
+      max-width: 220px;
+      height: auto;
+      aspect-ratio: 1 / 1;
+      background: url('tootieidle.gif') center/contain no-repeat;
+      margin: 6px auto;
+      border-radius: 12px;
+      transition: transform .22s ease;
     }
 
     /* stat bars */
@@ -102,21 +102,7 @@
       font-style:italic; min-height:44px; display:flex; align-items:center; justify-content:center;
     }
 
-    /* memory form */
-    .memory-form {
-      position: fixed; bottom: 18px; right: 18px; z-index: 8;
-      background: #fff; border:2px solid #ffd6e8; border-radius:12px; padding:12px;
-      box-shadow: 0 3px 10px rgba(255,182,193,0.28);
-      width: 280px;
-    }
-    .memory-form input, .memory-form textarea {
-      width:100%; box-sizing:border-box; margin:6px 0; padding:8px; border-radius:8px; border:1px solid #ffb6c1;
-      font-family: inherit;
-    }
-    .memory-form button { width:100%; margin-top:6px; background:#ffb6c1; border:none; padding:10px; border-radius:8px; cursor:pointer; font-weight:700; }
-    .memory-form button:hover { background:#ff8fb0; }
-
-    /* hearts container */
+    /* hearts */
     #hearts-container {
       position: fixed;
       top: 0;
@@ -125,35 +111,94 @@
       height: 100%;
       overflow: hidden;
       pointer-events: none;
-      z-index: 999; /* increased so hearts stay above all elements */
+      z-index: 999;
     }
 
-.heart {
-  position: absolute;
-  bottom: 0;
-  font-size: 1rem;
-  opacity: 0.9;
-  color: #ffb6c1;
-  text-shadow: 0 0 5px rgba(255, 182, 193, 0.8);
-  animation: floatUp linear infinite;
-  max-width: 90vw; /* keeps hearts within screen width */
-  white-space: normal; /* allows wrapping */
-  word-wrap: break-word; /* breaks long words if needed */
-  text-align: center; /* keeps text looking nice */
-  left: 50%; /* center horizontally */
-  transform: translateX(-50%); /* true center alignment */
-}
-
+    .heart {
+      position: absolute;
+      bottom: 0;
+      font-size: 1rem;
+      opacity: 0.9;
+      color: #ffb6c1;
+      text-shadow: 0 0 5px rgba(255, 182, 193, 0.8);
+      animation: floatUp linear infinite;
+      max-width: 90vw;
+      white-space: normal;
+      word-wrap: break-word;
+      text-align: center;
+      left: 50%;
+      transform: translateX(-50%);
+    }
 
     @keyframes floatUp {
       0% { transform: translateY(0); opacity: 0.8; }
       100% { transform: translateY(-110vh); opacity: 0; }
     }
 
-    @media (max-width:720px) {
-      .main-container { flex-direction:column; align-items:center; }
-      .tamagotchi-box { width: 92%; max-width:360px; }
-      .memory-form { right: 12px; left: 12px; bottom: 12px; width:auto; }
+    /* collapsible heart box */
+    .heart-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 20;
+    }
+
+    .heart-toggle {
+      display: none;
+      background: radial-gradient(circle at top left, #ffd6e8, #ffb6c1);
+      border: none;
+      border-radius: 50%;
+      font-size: 1.6rem;
+      width: 58px;
+      height: 58px;
+      box-shadow: 0 0 12px rgba(255,182,193,0.5);
+      cursor: pointer;
+      color: #fff;
+      text-shadow: 0 0 4px #ff80aa;
+      transition: transform 0.2s ease;
+    }
+    .heart-toggle:hover { transform: scale(1.1); }
+
+    .heart-box {
+      background: #fff;
+      border: 2px solid #ffd6e8;
+      border-radius: 15px;
+      padding: 12px;
+      box-shadow: 0 4px 12px rgba(255,182,193,0.3);
+      width: 280px;
+    }
+    .heart-box input, .heart-box textarea {
+      width: 100%;
+      box-sizing: border-box;
+      margin: 6px 0;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ffb6c1;
+      font-family: inherit;
+    }
+    .heart-box button {
+      width: 100%;
+      margin-top: 6px;
+      background: #ffb6c1;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .heart-box button:hover { background: #ff8fb0; }
+
+    @media (max-width: 768px) {
+      .heart-toggle { display: block; }
+      .heart-box {
+        display: none;
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        width: 80vw;
+        max-width: 320px;
+      }
+      .heart-box.active { display: block; }
     }
   </style>
 </head>
@@ -200,10 +245,15 @@
     </div>
   </div>
 
-  <div class="memory-form">
-    <input id="nameInput" placeholder="Your name (optional)">
-    <textarea id="memoryInput" placeholder="A short childhood memory..." rows="2"></textarea>
-    <button id="sendMemory">Send 💌</button>
+  <!-- 💌 Heart box -->
+  <div class="heart-container">
+    <button id="toggleHeartBox" class="heart-toggle">💌</button>
+    <div id="heartBox" class="heart-box">
+      <h3>Send a Heart 💖</h3>
+      <input id="nameInput" placeholder="Your name (optional)">
+      <textarea id="memoryInput" placeholder="A short childhood memory..." rows="2"></textarea>
+      <button id="sendMemory">Send 💕</button>
+    </div>
   </div>
 
   <div id="hearts-container" aria-hidden="true"></div>
@@ -258,16 +308,13 @@
     setTimeout(()=> tootieImg.style.transform = 'scale(1)', 400);
   }
 
- function changeTootieGif(gif) {
-  tootieImg.style.background = `url('${gif}') center/contain no-repeat`;
-
-  // If it's the sleep GIF, make it last longer
-  const duration = gif.includes('sleep') ? 5000 : 2000;
-
-  setTimeout(() => {
-    tootieImg.style.background = `url('tootieidle.gif') center/contain no-repeat`;
-  }, duration);
-}
+  function changeTootieGif(gif) {
+    tootieImg.style.background = `url('${gif}') center/contain no-repeat`;
+    const duration = gif.includes('sleep') ? 5000 : 2000;
+    setTimeout(() => {
+      tootieImg.style.background = `url('tootieidle.gif') center/contain no-repeat`;
+    }, duration);
+  }
 
   document.getElementById('feedBtn').addEventListener('click', () => {
     hunger = Math.min(100, hunger + 15);
@@ -309,7 +356,6 @@
     });
   });
 
-  // gradual decay
   setInterval(() => {
     hunger = Math.max(0, hunger - 0.2);
     sleepVal = Math.max(0, sleepVal - 0.1);
@@ -318,7 +364,6 @@
   }, 5000);
   updateBars();
 
-  // aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   const heartsContainer = document.getElementById('hearts-container');
   const activeHearts = new Set();
 
@@ -327,15 +372,11 @@
     activeHearts.add(mem.text);
     const heart = document.createElement('div');
     heart.className = 'heart';
-    heart.textContent = `💖 ${mem.text}`;
+    heart.textContent = `💖 ${mem.name || 'Someone'}: ${mem.text}`;
     heart.style.left = Math.random() * 90 + '%';
-    heart.style.animationDuration = 8 + Math.random() * 10 + 's';
-    heart.style.fontSize = 0.8 + Math.random() * 0.6 + 'rem';
+    heart.style.animationDuration = 10 + Math.random() * 10 + 's';
+    heart.style.fontSize = 0.9 + Math.random() * 0.6 + 'rem';
     heartsContainer.appendChild(heart);
-   // setTimeout(() => {
-     // heart.remove();
-      //activeHearts.delete(mem.text);
-    //}, 18000);
   }
 
   db.ref('memories').limitToLast(30).once('value', (snapshot) => {
@@ -344,7 +385,6 @@
   });
   db.ref('memories').on('child_added', (snap) => spawnHeart(snap.val()));
 
-  // bc firebase gaand mrae
   document.getElementById('sendMemory').addEventListener('click', () => {
     const name = document.getElementById('nameInput').value.trim() || "Anonymous";
     const text = document.getElementById('memoryInput').value.trim();
@@ -352,6 +392,14 @@
     db.ref('memories').push({ name, text, timestamp: Date.now() });
     document.getElementById('memoryInput').value = '';
     speak('Tootie thanks you for your memory 💕');
+    if (window.innerWidth < 768) document.getElementById('heartBox').classList.remove('active');
+  });
+
+  // Collapsible heart toggle
+  const toggleHeartBtn = document.getElementById('toggleHeartBox');
+  const heartBox = document.getElementById('heartBox');
+  toggleHeartBtn.addEventListener('click', () => {
+    heartBox.classList.toggle('active');
   });
   </script>
 </body>
